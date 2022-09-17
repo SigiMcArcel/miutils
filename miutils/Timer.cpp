@@ -13,6 +13,11 @@ void * miutils::Timer::proc(void * p)
 	return nullptr;
 }
 
+/// <summary>
+/// Starts the timer
+/// </summary>
+/// <param name="intervall">Intervall in millsecond</param>
+/// <returns></returns>
 int miutils::Timer::start(int intervall)
 {
 	struct sched_param params;
