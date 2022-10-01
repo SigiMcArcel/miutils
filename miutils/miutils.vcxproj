@@ -36,10 +36,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Event.h" />
+    <ClInclude Include="Library.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Library.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>

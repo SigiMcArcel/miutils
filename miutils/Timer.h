@@ -17,6 +17,14 @@ namespace miutils
 		RoundRobin	=	2
 	}Schedulers;
 
+	typedef enum TimerResults_e
+	{
+		ErrorOk,
+		ErrorCreate,
+		ErrorParam,
+		ErrorAllreadyRunning
+	}TimerResults;
+
 	class Timer : public EventHandler
 	{
 
@@ -38,8 +46,12 @@ namespace miutils
 			return _intervall;
 		}
 
-		int start(int intervall);
-		void stop();
+		TimerResults start(int intervall);
+		TimerResults start(int intervall,void* obj);
+		TimerResults start(int intervall, void* obj, int prio,Schedulers schedulerType);
+		TimerResults stop();
+
+		const void* getObject() { return _Object; };
 
 
 	private:
@@ -52,13 +64,12 @@ namespace miutils
 		long _numOfCPU;
 		int _CPUAffinity;
 		int _Prority;
+		void* _Object;
 
-
-	private:
 		long getNumOfCPU();
 		int getCPUAffinity();
 		int setCPUAffinity(int affinity);
-		miutils::Schedulers getScheduler();
+		Schedulers getScheduler();
 		int setScheduler(miutils::Schedulers scheduler);
 		int getPriority();
 		int setPriority(int priority);
