@@ -100,6 +100,11 @@
       <LibraryDependencies>pthread</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <RemotePostBuildEvent>
+      <Command>cp $(RemoteDebuggerCommand) /usr/lib &amp;&amp; cp $(RemoteDeployDir)/Timer.h /usr/include/mi/miutils</Command>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

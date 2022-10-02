@@ -50,7 +50,7 @@ miutils::TimerResults miutils::Timer::start(int intervall, void* obj, int prio, 
 			return TimerResults::ErrorParam;
 		}
 		params.sched_priority = sched_get_priority_min(static_cast<int>(schedulerType));
-		if (prio > params.sched_priority)
+		if (prio < params.sched_priority)
 		{
 			return TimerResults::ErrorParam;
 		}
@@ -70,13 +70,17 @@ miutils::TimerResults miutils::Timer::start(int intervall, void* obj, int prio, 
 		return TimerResults::ErrorCreate;
 	}
 
-	pthread_join(_thread, NULL);
 	return TimerResults::ErrorOk;
 }
 
 miutils::TimerResults miutils::Timer::stop()
 {
 	_timerState = 0;
+	if (_thread != 0)
+	{
+		pthread_join(_thread, NULL);
+		_thread = 0;
+	}
 	return TimerResults::ErrorOk;
 }
 

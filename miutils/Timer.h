@@ -33,6 +33,7 @@ namespace miutils
 		Timer(const std::string& name, EventListener* listener)
 			:_intervall(0)
 			, _thread_id(0)
+			,_thread(0)
 			, _timerState(0)
 			, _name(name)
 		{
@@ -40,7 +41,15 @@ namespace miutils
 			addListener(listener);
 		};
 
-
+		~Timer()
+		{
+			_timerState = 0;
+			if (_thread != 0)
+			{
+				pthread_join(_thread, NULL);
+			}
+			
+		}
 		int getInterval()
 		{
 			return _intervall;
