@@ -1,14 +1,14 @@
 #include <sched.h>
 #include "Timer.h"
 
-void * miutils::Timer::proc(void * p)
+void * miutils::Timer::Proc(void * p)
 {
 	Timer* timer = reinterpret_cast<Timer*>(p);
 	
-	while (timer->_timerState == 1)
+	while (timer->_TimerState == 1)
 	{
-		timer->setEvent(timer, timer->_name);
-		usleep(timer->getInterval() * 1000);
+		timer->setEvent(timer, timer->_Name);
+		usleep(timer->GetInterval() * 1000);
 	}
 	return nullptr;
 }
@@ -18,26 +18,26 @@ void * miutils::Timer::proc(void * p)
 /// </summary>
 /// <param name="intervall">Intervall in millsecond</param>
 /// <returns></returns>
-miutils::TimerResults miutils::Timer::start(int intervall)
+miutils::TimerResults miutils::Timer::Start(int intervall)
 {
-	return start(intervall, nullptr, 0, Schedulers::Other);
+	return Start(intervall, nullptr, 0, Schedulers::Other);
 }
 
-miutils::TimerResults miutils::Timer::start(int intervall, void* obj)
+miutils::TimerResults miutils::Timer::Start(int intervall, void* obj)
 {
-	return start(intervall,obj, 0, Schedulers::Other);
+	return Start(intervall,obj, 0, Schedulers::Other);
 }
 
-miutils::TimerResults miutils::Timer::start(int intervall, void* obj, int prio, Schedulers schedulerType)
+miutils::TimerResults miutils::Timer::Start(int intervall, void* obj, int prio, Schedulers schedulerType)
 {
 	struct sched_param params;
 	int err = 0;
-	if (_timerState != 0)
+	if (_TimerState != 0)
 	{
 		return TimerResults::ErrorAllreadyRunning;
 	}
-	_intervall = intervall;
-	_timerState = 1;
+	_Intervall = intervall;
+	_TimerState = 1;
 	if(schedulerType == Schedulers::Other)
 	{
 		params.sched_priority = 0;
@@ -59,12 +59,12 @@ miutils::TimerResults miutils::Timer::start(int intervall, void* obj, int prio, 
 	
 	_Object = obj;
 
-	err = pthread_create(&_thread, NULL, Timer::proc, this);
+	err = pthread_create(&_Thread, NULL, Timer::Proc, this);
 	if (err != 0)
 	{
 		return TimerResults::ErrorCreate;
 	}
-	err = pthread_setschedparam(_thread, static_cast<int>(schedulerType), &params);
+	err = pthread_setschedparam(_Thread, static_cast<int>(schedulerType), &params);
 	if (err != 0) {
 
 		return TimerResults::ErrorCreate;
@@ -73,26 +73,26 @@ miutils::TimerResults miutils::Timer::start(int intervall, void* obj, int prio, 
 	return TimerResults::ErrorOk;
 }
 
-miutils::TimerResults miutils::Timer::stop()
+miutils::TimerResults miutils::Timer::Stop()
 {
-	_timerState = 0;
-	if (_thread != 0)
+	_TimerState = 0;
+	if (_Thread != 0)
 	{
-		pthread_join(_thread, NULL);
-		_thread = 0;
+		pthread_join(_Thread, NULL);
+		_Thread = 0;
 	}
 	return TimerResults::ErrorOk;
 }
 
-long miutils::Timer::getNumOfCPU()
+long miutils::Timer::GetNumOfCPU()
 {
 	return sysconf(_SC_NPROCESSORS_ONLN);;
 }
 
-int miutils::Timer::getCPUAffinity()
+int miutils::Timer::GetCPUAffinity()
 {
 	cpu_set_t cpuset;
-	int result = pthread_getaffinity_np(_thread, sizeof(cpu_set_t), &cpuset);
+	int result = pthread_getaffinity_np(_Thread, sizeof(cpu_set_t), &cpuset);
 	if (result != 0)
 	{
 		return result;
@@ -100,27 +100,27 @@ int miutils::Timer::getCPUAffinity()
 	return 0;
 }
 
-int miutils::Timer::setCPUAffinity(int affinity)
+int miutils::Timer::SetCPUAffinity(int affinity)
 {
 	return 0;
 }
 
-miutils::Schedulers miutils::Timer::getScheduler()
+miutils::Schedulers miutils::Timer::GetScheduler()
 {
 	return miutils::Schedulers();
 }
 
-int miutils::Timer::setScheduler(miutils::Schedulers scheduler)
+int miutils::Timer::SetScheduler(miutils::Schedulers scheduler)
 {
 	return 0;
 }
 
-int miutils::Timer::getPriority()
+int miutils::Timer::GetPriority()
 {
 	return 0;
 }
 
-int miutils::Timer::setPriority(int priority)
+int miutils::Timer::SetPriority(int priority)
 {
 	return 0;
 }

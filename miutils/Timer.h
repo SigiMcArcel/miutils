@@ -12,9 +12,10 @@ namespace miutils
 {
 	typedef enum Schedulers_e
 	{
-		Other	=	0,
-		Fifo	=	1,
-		RoundRobin	=	2
+		Other =	0,
+		Fifo =	1,
+		RoundRobin = 2,
+		None = -1
 	}Schedulers;
 
 	typedef enum TimerResults_e
@@ -31,11 +32,11 @@ namespace miutils
 	public:
 
 		Timer(const std::string& name, EventListener* listener)
-			:_intervall(0)
-			, _thread_id(0)
-			,_thread(0)
-			, _timerState(0)
-			, _name(name)
+			:_Intervall(0)
+			, _Thread_id(0)
+			,_Thread(0)
+			, _TimerState(0)
+			, _Name(name)
 		{
 
 			addListener(listener);
@@ -43,45 +44,45 @@ namespace miutils
 
 		~Timer()
 		{
-			_timerState = 0;
-			if (_thread != 0)
+			_TimerState = 0;
+			if (_Thread != 0)
 			{
-				pthread_join(_thread, NULL);
+				pthread_join(_Thread, NULL);
 			}
 			
 		}
-		int getInterval()
+		int GetInterval()
 		{
-			return _intervall;
+			return _Intervall;
 		}
 
-		TimerResults start(int intervall);
-		TimerResults start(int intervall,void* obj);
-		TimerResults start(int intervall, void* obj, int prio,Schedulers schedulerType);
-		TimerResults stop();
+		TimerResults Start(int intervall);
+		TimerResults Start(int intervall,void* obj);
+		TimerResults Start(int intervall, void* obj, int prio,Schedulers schedulerType);
+		TimerResults Stop();
 
-		const void* getObject() { return _Object; };
+		void* GetObject() { return _Object; };
 
 
 	private:
-		int _intervall;
-		static void* proc(void* p);
-		int _thread_id;
-		pthread_t _thread;
-		int _timerState;
-		std::string _name;
-		long _numOfCPU;
+		int _Intervall;
+		static void* Proc(void* p);
+		int _Thread_id;
+		pthread_t _Thread;
+		int _TimerState;
+		std::string _Name;
+		long _NumOfCPU;
 		int _CPUAffinity;
 		int _Prority;
 		void* _Object;
 
-		long getNumOfCPU();
-		int getCPUAffinity();
-		int setCPUAffinity(int affinity);
-		Schedulers getScheduler();
-		int setScheduler(miutils::Schedulers scheduler);
-		int getPriority();
-		int setPriority(int priority);
+		long GetNumOfCPU();
+		int GetCPUAffinity();
+		int SetCPUAffinity(int affinity);
+		Schedulers GetScheduler();
+		int SetScheduler(miutils::Schedulers scheduler);
+		int GetPriority();
+		int SetPriority(int priority);
 
 	};
 }
