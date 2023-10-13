@@ -7,23 +7,19 @@
 
 class miString : public std::string
 {
-	miString readFile(const std::string& path)
+	const miString readFile(const std::string& path)
 	{
-		std::ifstream input_file(path);
-		if (!input_file.is_open()) {
-			return miString();
-		}
-		return miString((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
+		return miString();
 	}
 
 	miString readLine()
 	{
-
+		return miString();
 	}
 
 	miString toLower()
 	{
-
+		return miString();
 	}
 
 	bool contains(miString text)
@@ -31,9 +27,6 @@ class miString : public std::string
 		return false;
 	}
 
-	std::vector<miString> split(const std::vector<miString>)
-	{
-
-	}
+	
 };
 

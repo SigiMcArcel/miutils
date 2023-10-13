@@ -1,5 +1,6 @@
 #include <sched.h>
-#include "Timer.h"
+#include "mi/miutils/Timer.h"
+
 
 void * miutils::Timer::Proc(void * p)
 {
@@ -7,8 +8,10 @@ void * miutils::Timer::Proc(void * p)
 	
 	while (timer->_TimerState == 1)
 	{
+		timer->Lock();
 		timer->setEvent(timer, timer->_Name);
-		usleep(timer->GetInterval() * 1000);
+		timer->Unlock();
+		::usleep(timer->GetInterval() * 1000);
 	}
 	return nullptr;
 }
@@ -123,4 +126,13 @@ int miutils::Timer::GetPriority()
 int miutils::Timer::SetPriority(int priority)
 {
 	return 0;
+}
+
+void miutils::Timer::Lock()
+{
+	_CriticalSection.EnterCriticalSection();
+}
+void miutils::Timer::Unlock()
+{
+	_CriticalSection.LeaveCriticalSection();
 }

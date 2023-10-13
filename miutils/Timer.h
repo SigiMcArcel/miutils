@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "Event.h"
+#include "mi/miutils/CriticalSection.h"
 
 namespace miutils
 {
@@ -37,6 +38,7 @@ namespace miutils
 			,_Thread(0)
 			, _TimerState(0)
 			, _Name(name)
+			, _CriticalSection()
 		{
 
 			addListener(listener);
@@ -62,7 +64,8 @@ namespace miutils
 		TimerResults Stop();
 
 		void* GetObject() { return _Object; };
-
+		void Lock();
+		void Unlock();
 
 	private:
 		int _Intervall;
@@ -75,6 +78,8 @@ namespace miutils
 		int _CPUAffinity;
 		int _Prority;
 		void* _Object;
+		CriticalSection _CriticalSection;
+
 
 		long GetNumOfCPU();
 		int GetCPUAffinity();
@@ -83,6 +88,7 @@ namespace miutils
 		int SetScheduler(miutils::Schedulers scheduler);
 		int GetPriority();
 		int SetPriority(int priority);
+		
 
 	};
 }

@@ -35,6 +35,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CriticalSection.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="miString.h" />
     <ClInclude Include="Time.h" />
@@ -102,7 +103,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <RemotePostBuildEvent>
-      <Command>cp $(RemoteDebuggerCommand) /usr/lib &amp;&amp; cp $(RemoteDeployDir)/Timer.h /usr/include/mi/miutils</Command>
+      <Command>cp $(RemoteDebuggerCommand) /usr/lib</Command>
     </RemotePostBuildEvent>
     <Link>
       <LibraryDependencies>pthread</LibraryDependencies>
@@ -111,6 +112,9 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <RemotePreBuildEvent>
+      <Command> cp *.h /usr/include/mi/miutils/</Command>
+    </RemotePreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
