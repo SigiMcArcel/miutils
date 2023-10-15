@@ -11,7 +11,7 @@ LD_FLAGS = -shared -lpthread
 SOURCES=miString.cpp Time.cpp Timer.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 
-LIBRARYOUT=libmisound.so
+LIBRARYOUT=libmiutils.so
 
 
 .cpp.o:

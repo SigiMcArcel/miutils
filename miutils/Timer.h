@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include "Event.h"
-#include "mi/miutils/CriticalSection.h"
+#include "CriticalSection.h"
 
 namespace miutils
 {
