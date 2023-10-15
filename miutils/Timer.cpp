@@ -1,5 +1,5 @@
 #include <sched.h>
-#include "/Timer.h"
+#include "Timer.h"
 
 
 void * miutils::Timer::Proc(void * p)
