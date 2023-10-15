@@ -6,7 +6,7 @@ INCLUDEDIR=/usr/include
 
 INCLUDES = -I. -I/.
 CXX_FLAGS = -fpic -Wall
-LD_FLAGS = -shared -lsndfile -lpthread -lasound
+LD_FLAGS = -shared -lpthread
 
 SOURCES=miString.cpp Time.cpp Timer.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
