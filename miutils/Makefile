@@ -1,8 +1,9 @@
-
-
 DESTDIR=
-LIBDIR=/usr/lib
-INCLUDEDIR=/usr/include
+prefix=/usr
+includedir=$(prefix)/include
+libdir=$(prefix)/lib
+
+
 
 INCLUDES = -I. -I/.
 CXX_FLAGS = -fpic -Wall
@@ -23,11 +24,13 @@ clean:
 	
 
 install: $(LIBRARYOUT)
-	mkdir -p $(DESTDIR)/$(LIBDIR)
-	mkdir -p $(DESTDIR)/$(INCLUDEDIR)
-	cp miString.h $(DESTDIR)/$(INCLUDEDIR)
-	cp Time.h $(DESTDIR)/$(INCLUDEDIR)
-	cp Timer.h $(DESTDIR)/$(INCLUDEDIR)
-	cp CriticalSection.h $(DESTDIR)/$(INCLUDEDIR)
-	cp Event.h $(DESTDIR)/$(INCLUDEDIR)
-	cp $(LIBRARYOUT) $(DESTDIR)/$(LIBDIR)
+	install -d $(DESTDIR)/${libdir}
+	install -D -m 0644 libmidriver.so $(DESTDIR)/${libdir}/$(LIBRARYOUT)
+	install -d $(DESTDIR)/${includedir}
+	install -d $(DESTDIR)/${includedir}/mi
+	install -d $(DESTDIR)/${includedir}/mi/miutils
+	install -D -m 0644 miString.h $(DESTDIR)/${includedir}/mi/midriver/miString.h
+	install -D -m 0644 Time.h $(DESTDIR)/${includedir}/mi/midriver/Time.h
+	install -D -m 0644 Timer.h $(DESTDIR)/${includedir}/mi/midriver/Timer.h
+	install -D -m 0644 CriticalSection.h $(DESTDIR)/${includedir}/mi/midriver/CriticalSection.h
+	install -D -m 0644 Event.h $(DESTDIR)/${includedir}/mi/midriver/Event.h
