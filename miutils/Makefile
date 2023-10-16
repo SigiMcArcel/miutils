@@ -29,8 +29,8 @@ install: $(LIBRARYOUT)
 	install -d $(DESTDIR)/${includedir}
 	install -d $(DESTDIR)/${includedir}/mi
 	install -d $(DESTDIR)/${includedir}/mi/miutils
-	install -D -m 0644 miString.h $(DESTDIR)/${includedir}/mi/midriver/miString.h
-	install -D -m 0644 Time.h $(DESTDIR)/${includedir}/mi/midriver/Time.h
-	install -D -m 0644 Timer.h $(DESTDIR)/${includedir}/mi/midriver/Timer.h
-	install -D -m 0644 CriticalSection.h $(DESTDIR)/${includedir}/mi/midriver/CriticalSection.h
-	install -D -m 0644 Event.h $(DESTDIR)/${includedir}/mi/midriver/Event.h
+	install -D -m 0644 miString.h $(DESTDIR)/${includedir}/mi/miutils/miString.h
+	install -D -m 0644 Time.h $(DESTDIR)/${includedir}/mi/miutils/Time.h
+	install -D -m 0644 Timer.h $(DESTDIR)/${includedir}/mi/miutils/Timer.h
+	install -D -m 0644 CriticalSection.h $(DESTDIR)/${includedir}/mi/miutils/CriticalSection.h
+	install -D -m 0644 Event.h $(DESTDIR)/${includedir}/mi/miutils/Event.h
