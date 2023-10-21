@@ -6,7 +6,7 @@ libdir=$(prefix)/lib
 
 
 INCLUDES = -I. -I/.
-CXX_FLAGS = -fpic -Wall
+CXX_FLAGS = -fpic -Wall -Wl,--no-undefined
 LD_FLAGS = -shared -lpthread
 
 SOURCES=miString.cpp Time.cpp Timer.cpp
