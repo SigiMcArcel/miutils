@@ -11,7 +11,11 @@ void * miutils::Timer::Proc(void * p)
 		timer->Lock();
 		timer->setEvent(timer, timer->_Name);
 		timer->Unlock();
-		::usleep(timer->GetInterval() * 1000);
+		if (timer->GetInterval() > 0)
+		{
+			::usleep(timer->GetInterval() * 1000);
+		}
+		
 	}
 	return nullptr;
 }
