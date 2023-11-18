@@ -1,27 +1,29 @@
 #pragma once
 #include <mutex>
 #include <pthread.h>
-
-class CriticalSection
+namespace miutils
 {
-private:
-	pthread_mutex_t _CriticalSection;
-public:
-	CriticalSection()
+	class CriticalSection
 	{
-		pthread_mutex_init(&_CriticalSection, NULL);
-	}
-	~CriticalSection()
-	{
-		pthread_mutex_destroy(&_CriticalSection);
-	}
-	void EnterCriticalSection()
-	{
-		pthread_mutex_lock(&_CriticalSection);
-	}
-	void LeaveCriticalSection()
-	{
-		pthread_mutex_unlock(&_CriticalSection);
-	}
-};
+	private:
+		pthread_mutex_t _CriticalSection;
+	public:
+		CriticalSection()
+		{
+			pthread_mutex_init(&_CriticalSection, NULL);
+		}
+		~CriticalSection()
+		{
+			pthread_mutex_destroy(&_CriticalSection);
+		}
+		void EnterCriticalSection()
+		{
+			pthread_mutex_lock(&_CriticalSection);
+		}
+		void LeaveCriticalSection()
+		{
+			pthread_mutex_unlock(&_CriticalSection);
+		}
+	};
+}
 
