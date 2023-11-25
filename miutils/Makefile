@@ -34,3 +34,4 @@ install: $(LIBRARYOUT)
 	install -D -m 0644 Timer.h $(DESTDIR)/${includedir}/mi/miutils/Timer.h
 	install -D -m 0644 CriticalSection.h $(DESTDIR)/${includedir}/mi/miutils/CriticalSection.h
 	install -D -m 0644 Event.h $(DESTDIR)/${includedir}/mi/miutils/Event.h
+	install -D -m 0644 Semaphore.h $(DESTDIR)/${includedir}/mi/miutils/Semaphore.h
