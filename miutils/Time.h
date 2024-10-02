@@ -8,13 +8,14 @@ namespace miutils
 
 	class Time
 	{
-		unsigned long _timerCount;
-		unsigned long _startime;
+		long _LastTick;
+		long _StarTick;
 	public:
 
 
 		Time()
-			:_timerCount(0)
+			:_LastTick(-1)
+			, _StarTick(-1)
 		{
 		}
 
@@ -25,29 +26,44 @@ namespace miutils
 
 		bool reset()
 		{
-			_timerCount = getMsTickCount();
-			_startime = _timerCount;
+			_LastTick = -1;
+			_StarTick = -1;
 			return true;
 		}
-		bool wait(unsigned long millsecond)
-		{
-			unsigned long acttime = getMsTickCount();
-			unsigned long diff = acttime - _timerCount;
 
-			if (_timerCount == 0)
+	
+
+		bool elapsed(long millisecond)
+		{
+			long acttime = 0;
+			long diff = 0;
+			
+			if (millisecond <= 0)
 			{
+				_StarTick = -1;
+				_LastTick = -1;
 				return false;
 			}
-			if (diff >= millsecond)
+		
+			if (_StarTick == -1)
 			{
-				_timerCount = 0;
-				return true;
+				_LastTick =_StarTick = getMsTickCount();
 			}
-
+			else
+			{
+				acttime = getMsTickCount();
+				diff = acttime - _StarTick;
+				_LastTick = acttime;
+				if (diff > millisecond)
+				{
+					_StarTick = -1;
+					return true;
+				}
+			}
 			return false;
-		}
 
-		unsigned long getMsTickCount()
+		}
+		long getMsTickCount()
 		{
 			long tick = 0;
 			struct timespec ts;

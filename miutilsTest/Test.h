@@ -1,6 +1,6 @@
 #pragma once
-#include "Timer.h"
-#include "Event.h"
+#include <mi/miutils/Timer.h>
+
 
 using namespace miutils;
 
@@ -10,8 +10,8 @@ private:
 	Timer _timer;
 
 public:
-	Test()
-		:_timer("Test",this)
+	Test(const std::string name)
+		:_timer(name,this)
 	{
 
 	}
@@ -19,12 +19,12 @@ public:
 	virtual void eventOccured(void* sender, const std::string& name) override;
 	void start(int intervall)
 	{
-		_timer.start(intervall);
+		_timer.Start(intervall);
 	}
 
 	void stop()
 	{
-		_timer.stop();
+		_timer.Stop();
 	}
 };
 

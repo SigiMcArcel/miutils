@@ -2,5 +2,5 @@
 #include <cstdio>
 void Test::eventOccured(void* sender, const std::string& name)
 {
-	printf("Hallo aus %s!\n", "miutilsTest");
+	printf("Hallo aus %s!\n", name.c_str());
 }
