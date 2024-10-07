@@ -43,7 +43,12 @@ miutils::TimerResults miutils::Timer::Start(int intervall, void* obj, int prio, 
 	{
 		return TimerResults::ErrorAllreadyRunning;
 	}
+	
 	_Intervall = intervall;
+	if (_Intervall <= 0)
+	{
+		return miutils::TimerResults::ErrorParam;
+	}
 	_TimerState = 1;
 	if(schedulerType == Schedulers::Other)
 	{
