@@ -6,36 +6,36 @@ void * miutils::Timer::Proc(void * p)
 {
 	Timer* timer = reinterpret_cast<Timer*>(p);
 	
-	while (timer->_TimerState == 1)
+	if (timer == nullptr)
 	{
-		timer->Lock();
-		timer->setEvent(timer, timer->_Name);
-		timer->Unlock();
-		if (timer->GetInterval() > 0)
+		return nullptr;
+	}
+	while (1)
+	{
+		if (!timer->setEvent())
 		{
-			::usleep(timer->GetInterval() * 1000);
+			return nullptr;
 		}
-		
 	}
 	return nullptr;
 }
 
+miutils::TimerResults miutils::Timer::Start()
+{
+	return Start(_Intervall, _Prority, _SchedulerType);
+}
+
 /// <summary>
-/// Starts the timer
+/// Starts the timer with default scheduler
 /// </summary>
 /// <param name="intervall">Intervall in millsecond</param>
 /// <returns></returns>
 miutils::TimerResults miutils::Timer::Start(int intervall)
 {
-	return Start(intervall, nullptr, 0, Schedulers::Other);
+	return Start(intervall, 0, SchedulerType::Other);
 }
 
-miutils::TimerResults miutils::Timer::Start(int intervall, void* obj)
-{
-	return Start(intervall,obj, 0, Schedulers::Other);
-}
-
-miutils::TimerResults miutils::Timer::Start(int intervall, void* obj, int prio, Schedulers schedulerType)
+miutils::TimerResults miutils::Timer::Start(int intervall, int prio, SchedulerType schedulerType)
 {
 	struct sched_param params;
 	int err = 0;
@@ -50,7 +50,7 @@ miutils::TimerResults miutils::Timer::Start(int intervall, void* obj, int prio, 
 		return miutils::TimerResults::ErrorParam;
 	}
 	_TimerState = 1;
-	if(schedulerType == Schedulers::Other)
+	if(schedulerType == SchedulerType::Other)
 	{
 		params.sched_priority = 0;
 	}
@@ -69,8 +69,6 @@ miutils::TimerResults miutils::Timer::Start(int intervall, void* obj, int prio, 
 		params.sched_priority = prio;
 	}
 	
-	_Object = obj;
-
 	err = pthread_create(&_Thread, NULL, Timer::Proc, this);
 	if (err != 0)
 	{
@@ -114,15 +112,27 @@ int miutils::Timer::GetCPUAffinity()
 
 int miutils::Timer::SetCPUAffinity(int affinity)
 {
+	cpu_set_t cpuset;
+	if (affinity >= GetNumOfCPU())
+	{
+		return -1;
+	}
+	CPU_ZERO(&cpuset);          // Initialisiert den CPU-Satz
+	CPU_SET(affinity, &cpuset);        // Setzt den Thread auf CPU 2
+	int result = pthread_setaffinity_np(_Thread, sizeof(cpu_set_t), &cpuset);
+	if (result != 0)
+	{
+		return -1;
+	}
 	return 0;
 }
 
-miutils::Schedulers miutils::Timer::GetScheduler()
+miutils::SchedulerType miutils::Timer::GetScheduler()
 {
-	return miutils::Schedulers();
+	return miutils::SchedulerType();
 }
 
-int miutils::Timer::SetScheduler(miutils::Schedulers scheduler)
+int miutils::Timer::SetScheduler(miutils::SchedulerType scheduler)
 {
 	return 0;
 }
@@ -144,4 +154,42 @@ void miutils::Timer::Lock()
 void miutils::Timer::Unlock()
 {
 	_CriticalSection.LeaveCriticalSection();
+}
+
+void miutils::Timer::addListener(miutils::TimerEventListenerShared listener)
+{
+	_Listeners.push_back(listener);
+}
+
+void miutils::Timer::addListener(miutils::TimerEventListenerShared listener, miutils::TimerEventListenerObject object)
+{
+	listener->setObject(object);
+	_Listeners.push_back(listener);
+}
+
+void miutils::Timer::removeListener(miutils::TimerEventListenerShared listener)
+{
+	_Listeners.remove(listener);
+}
+
+const std::string miutils::Timer::name() const
+{
+	return _Name;
+}
+bool miutils::Timer::setEvent()
+{
+	_CriticalSection.EnterCriticalSection();
+	for (const auto& listener : _Listeners) {
+		listener->timerEventOccured(listener->getObject(), _Name);
+	}
+	if (_Intervall > 0)
+	{
+		::usleep(_Intervallus);
+	}
+	_CriticalSection.LeaveCriticalSection();
+	if (_TimerState == 1)
+	{
+		return true;
+	}
+	return false;
 }
