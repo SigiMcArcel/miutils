@@ -3,35 +3,35 @@ prefix=/usr
 includedir=$(prefix)/include
 libdir=$(prefix)/lib
 
-
-
 INCLUDES = -I. -I/.
-CXX_FLAGS = -fpic -Wall -Wl,--no-undefined
+CXXFLAGS = -fpic -Wall -Wl,--no-undefined
 LD_FLAGS = -shared -lpthread
 
-SOURCES=miString.cpp Time.cpp Timer.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
+# Automatisch alle .cpp-Dateien im aktuellen Verzeichnis als SOURCES verwenden
+SOURCES := $(wildcard *.cpp)
+OBJECTS := $(SOURCES:.cpp=.o)
 
-LIBRARYOUT=libmiutils.so
+# Bibliotheksname basierend auf dem Verzeichnisnamen erstellen
+PROJECT_NAME := $(notdir $(CURDIR))
+LIBRARYOUT = lib$(PROJECT_NAME).so
 
-
+# Regel zum Kompilieren der .cpp-Dateien zu .o-Dateien
 .cpp.o:
-	$(CXX) $(CXX_FLAGS) $(INCLUDES) -c $<
-$(LIBRARYOUT):$(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
+
+# Regel zum Erstellen der Bibliothek
+$(LIBRARYOUT): $(OBJECTS)
 	$(CXX) $(LD_FLAGS) $(OBJECTS) -o $(LIBRARYOUT)
+
+# Regel zum Bereinigen der Build-Artefakte
 clean:
 	$(RM) $(LIBRARYOUT) *.o
-	
 
+# Regel zur Installation der Bibliothek und Header-Dateien
 install: $(LIBRARYOUT)
-	install -d $(DESTDIR)/${libdir}
-	install -D -m 0644 libmiutils.so $(DESTDIR)/${libdir}/$(LIBRARYOUT)
-	install -d $(DESTDIR)/${includedir}
-	install -d $(DESTDIR)/${includedir}/mi
-	install -d $(DESTDIR)/${includedir}/mi/miutils
-	install -D -m 0644 miString.h $(DESTDIR)/${includedir}/mi/miutils/miString.h
-	install -D -m 0644 Time.h $(DESTDIR)/${includedir}/mi/miutils/Time.h
-	install -D -m 0644 Timer.h $(DESTDIR)/${includedir}/mi/miutils/Timer.h
-	install -D -m 0644 CriticalSection.h $(DESTDIR)/${includedir}/mi/miutils/CriticalSection.h
-	install -D -m 0644 Event.h $(DESTDIR)/${includedir}/mi/miutils/Event.h
-	install -D -m 0644 Semaphore.h $(DESTDIR)/${includedir}/mi/miutils/Semaphore.h
+	install -d $(DESTDIR)/$(libdir)
+	install -D -m 0644 $(LIBRARYOUT) $(DESTDIR)/$(libdir)/$(LIBRARYOUT)
+	install -d $(DESTDIR)/$(includedir)/mi/$(PROJECT_NAME)
+	for header in *.h; do \
+		install -D -m 0644 $$header $(DESTDIR)/$(includedir)/mi/$(PROJECT_NAME)/$$header; \
+	done
