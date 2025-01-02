@@ -178,10 +178,20 @@ const std::string miutils::Timer::name() const
 }
 bool miutils::Timer::setEvent()
 {
+	bool stop = false;
 	_CriticalSection.EnterCriticalSection();
 	for (const auto& listener : _Listeners) {
-		listener->timerEventOccured(listener->getObject(), _Name);
+		if (listener->timerEventOccured(listener->getObject(), _Name))
+		{
+			fprintf(stderr, "Timer name %s leaves\n", _Name.c_str());
+			_TimerState = 0;
+			_Thread = 0;
+			_CriticalSection.LeaveCriticalSection();
+			return false;
+		}
 	}
+	
+	
 	if (_Intervall > 0)
 	{
 		::usleep(_Intervallus);

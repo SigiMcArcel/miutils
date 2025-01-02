@@ -59,7 +59,7 @@ namespace miutils
 			_Object = object;
 		}
 
-		virtual void timerEventOccured(miutils::TimerEventListenerObject, const std::string& name) = 0;
+		virtual bool timerEventOccured(miutils::TimerEventListenerObject, const std::string& name) = 0;
 	};
 
 	typedef TimerEventListener* TimerEventListenerShared;
@@ -164,12 +164,16 @@ namespace miutils
 
 		~Timer()
 		{
-			_TimerState = 0;
-			if (_Thread != 0)
+			_Listeners.clear();
+			if (_TimerState != 0)
 			{
-				pthread_join(_Thread, NULL);
+				_TimerState = 0;
+				if (_Thread != 0)
+				{
+					fprintf(stderr,"Timer name %s", _Name.c_str());
+					pthread_join(_Thread, NULL);
+				}
 			}
-			
 		}
 		int GetInterval()
 		{
@@ -185,6 +189,11 @@ namespace miutils
 		TimerResults Start(int intervall);
 		TimerResults Start(int intervall,int prio,SchedulerType schedulerType);
 		TimerResults Stop();
+
+		void join()
+		{
+
+		}
 
 		const CriticalSection& criticalSection() const
 		{
